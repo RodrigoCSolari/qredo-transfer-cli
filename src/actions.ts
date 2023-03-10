@@ -25,6 +25,8 @@ export async function createTx() {
     if (response.status === "created") {
       console.log("Transaction Created\n");
       console.log(`Tx ID: ${response.txID}\n`);
+    } else {
+      console.log(response, "\n");
     }
   } catch (error) {
     console.error(error);
@@ -39,8 +41,12 @@ export async function getApprovals() {
     headers: getHeaders(method, url),
   };
   try {
-    const response = await fetchData(url, options);
-    showApprovals(response);
+    const response: any = await fetchData(url, options);
+    if (response.list) {
+      showApprovals(response);
+    } else {
+      console.log(response, "\n");
+    }
   } catch (error) {
     console.error(error);
   }
@@ -56,10 +62,13 @@ export async function getSignedTx() {
   };
   try {
     const response: any = await fetchData(url, options);
+
     if (response.signedTx === "0x") {
       console.log("Waiting For User Approvals\n");
-    } else {
+    } else if (response.signedTx) {
       console.log(`Signed Tx: ${response.signedTx}\n`);
+    } else {
+      console.log(response, "\n");
     }
   } catch (error) {
     console.error(error);
